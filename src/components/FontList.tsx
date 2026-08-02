@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import type { FontInfo, PreviewSettings } from "../types";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import type { FontInfo, FontSet, PreviewSettings } from "../types";
 import { getFontKey } from "../hooks/useFontLibrary";
 import { FontCard } from "./FontCard";
 
@@ -14,17 +14,30 @@ interface FontListProps {
   onToggleFrequent: (key: string) => void;
   onToggleFavorite: (key: string) => void;
   onUse: (key: string) => void;
+  sets: FontSet[];
+  onToggleSet: (setId: string, key: string) => void;
+  onCreateSet: (name: string) => FontSet;
 }
 
 const INITIAL_COUNT = 24;
 const LOAD_COUNT = 24;
 
-export function FontList({ fonts, text, settings, frequent, favorites, onToggleFrequent, onToggleFavorite, onUse }: FontListProps) {
+export function FontList({ fonts, text, settings, frequent, favorites, onToggleFrequent, onToggleFavorite, onUse, sets, onToggleSet, onCreateSet }: FontListProps) {
   const [renderCount, setRenderCount] = useState(INITIAL_COUNT);
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const pendingScrollPosition = useRef<{ x: number; y: number }>();
 
-  // 搜索结果或排版方向改变时退回首批，避免一次重排已经加载的数百张卡片。
-  useEffect(() => { setRenderCount(INITIAL_COUNT); }, [fonts, settings.vertical]);
+  const toggleWithoutScroll = (toggle: (key: string) => void, key: string) => {
+    pendingScrollPosition.current = { x: window.scrollX, y: window.scrollY };
+    toggle(key);
+  };
+
+  useLayoutEffect(() => {
+    const position = pendingScrollPosition.current;
+    if (!position) return;
+    pendingScrollPosition.current = undefined;
+    window.scrollTo(position.x, position.y);
+  }, [frequent, favorites]);
 
   useEffect(() => {
     const target = loadMoreRef.current;
@@ -45,7 +58,7 @@ export function FontList({ fonts, text, settings, frequent, favorites, onToggleF
     <div className={`font-list ${settings.vertical ? "vertical-grid" : ""}`}>
       {renderedFonts.map((font) => {
         const key = getFontKey(font);
-        return <FontCard key={key} font={font} text={text} settings={settings} isFrequent={frequent.includes(key)} isFavorite={favorites.includes(key)} onToggleFrequent={() => onToggleFrequent(key)} onToggleFavorite={() => onToggleFavorite(key)} onUse={() => onUse(key)} />;
+        return <FontCard key={key} font={font} fontKey={key} text={text} settings={settings} isFrequent={frequent.includes(key)} isFavorite={favorites.includes(key)} sets={sets} onToggleSet={onToggleSet} onCreateSet={onCreateSet} onToggleFrequent={() => toggleWithoutScroll(onToggleFrequent, key)} onToggleFavorite={() => toggleWithoutScroll(onToggleFavorite, key)} onUse={() => onUse(key)} />;
       })}
     </div>
     {renderCount < fonts.length && <div ref={loadMoreRef} className="load-more-status" aria-live="polite">

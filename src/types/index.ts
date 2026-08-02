@@ -3,6 +3,7 @@ export interface FontInfo {
   fullName: string;
   postscriptName: string;
   style: string;
+  glyphRanges?: Array<[number, number]>;
 }
 
 export interface PreviewSettings {
@@ -16,11 +17,20 @@ export interface PreviewSettings {
 }
 
 export type FontSource = "local" | "fallback";
-export type FontCollectionFilter = "all" | "frequent" | "favorites" | "recent";
+export type FontCollectionFilter = "all" | "frequent" | "favorites" | "recent" | "sets";
+
+export interface FontSet {
+  id: string;
+  name: string;
+  color?: string;
+  note?: string;
+  fontKeys: string[];
+}
 
 export interface LocalFontData {
   family: string;
   fullName: string;
   postscriptName: string;
   style: string;
+  blob: () => Promise<Blob>;
 }
