@@ -29,6 +29,11 @@ export default function Home() {
       .some((value) => typeof value === "string" && value.toLocaleLowerCase().includes(keyword)));
   }, [fonts, query, collection, selectedSetId, library]);
   const selectedSet = library.sets.find((fontSet) => fontSet.id === selectedSetId);
+  const selectCollection = (nextCollection: FontCollectionFilter) => {
+    setCollection(nextCollection);
+    setQuery("");
+    if (nextCollection === "sets") setSelectedSetId(undefined);
+  };
 
   return <main className="app-shell">
     <header className="topbar">
@@ -43,11 +48,11 @@ export default function Home() {
       <section className="content">
         <PreviewPanel value={previewText} onChange={setPreviewText} />
         <div className="collection-tabs" role="tablist" aria-label="字体分类">
-          <CollectionTab label="全部字体" count={fonts.length} active={collection === "all"} onClick={() => setCollection("all")} />
-          <CollectionTab label="★ 常用字体" count={library.frequent.length} active={collection === "frequent"} onClick={() => setCollection("frequent")} />
-          <CollectionTab label="♥ 收藏字体" count={library.favorites.length} active={collection === "favorites"} onClick={() => setCollection("favorites")} />
-          <CollectionTab label="最近使用" count={library.recent.length} active={collection === "recent"} onClick={() => setCollection("recent")} />
-          <CollectionTab label="我的字体集" count={library.sets.length} active={collection === "sets"} onClick={() => { setCollection("sets"); setSelectedSetId(undefined); }} />
+          <CollectionTab label="全部字体" count={fonts.length} active={collection === "all"} onClick={() => selectCollection("all")} />
+          <CollectionTab label="★ 常用字体" count={library.frequent.length} active={collection === "frequent"} onClick={() => selectCollection("frequent")} />
+          <CollectionTab label="♥ 收藏字体" count={library.favorites.length} active={collection === "favorites"} onClick={() => selectCollection("favorites")} />
+          <CollectionTab label="最近使用" count={library.recent.length} active={collection === "recent"} onClick={() => selectCollection("recent")} />
+          <CollectionTab label="我的字体集" count={library.sets.length} active={collection === "sets"} onClick={() => selectCollection("sets")} />
         </div>
         {collection === "sets" && !selectedSet ? <FontSetList sets={library.sets} onOpen={setSelectedSetId} onCreate={createSet} onDelete={(id) => { deleteSet(id); if (selectedSetId === id) setSelectedSetId(undefined); }} /> : <>
           <div className="list-toolbar"><span className="list-heading">{selectedSet && <button className="back-to-sets" onClick={() => setSelectedSetId(undefined)}>‹ 我的字体集</button>}{selectedSet ? `${selectedSet.name} · ${visibleFonts.length}` : `当前显示 · ${visibleFonts.length}`}</span><SearchBar value={query} onChange={setQuery} /></div>
