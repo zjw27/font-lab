@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   base: "/font-lab/",
-  root: "pages",
+  root: "github-pages",
   publicDir: "../public",
   plugins: [react()],
   build: {

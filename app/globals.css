@@ -12,6 +12,10 @@
   font-synthesis: none;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 * {
   box-sizing: border-box;
 }
