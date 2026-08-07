@@ -6,6 +6,7 @@ import { PreviewPanel } from "../components/PreviewPanel";
 import { SearchBar } from "../components/SearchBar";
 import { SettingsPanel } from "../components/SettingsPanel";
 import { FontSetList } from "../components/FontSetList";
+import { BackToTop } from "../components/BackToTop";
 import { useFonts } from "../hooks/useFonts";
 import { getFontKey, useFontLibrary } from "../hooks/useFontLibrary";
 import { useSettings } from "../hooks/useSettings";
@@ -61,6 +62,7 @@ export default function Home() {
       </section>
       <SettingsPanel settings={settings} onChange={updateSetting} />
     </div>
+    <BackToTop />
   </main>;
 }
 

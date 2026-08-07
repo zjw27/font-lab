@@ -717,6 +717,43 @@ input[type="range"] {
   font-size: 11px;
   line-height: 1.55;
 }
+.back-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 20;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  padding: 8px;
+  place-items: center;
+  border: 1px solid #d5d4ce;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: #55544e;
+  box-shadow: 0 3px 12px rgba(30, 30, 25, 0.12);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 160ms ease, transform 160ms ease, background 160ms ease, color 160ms ease;
+}
+.back-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.back-to-top:hover {
+  background: #fff;
+  color: #20201e;
+}
+.back-to-top:focus-visible {
+  outline: 2px solid #55544e;
+  outline-offset: 3px;
+}
+.back-to-top svg {
+  width: 100%;
+  height: 100%;
+}
 
 @media (max-width: 800px) {
   .topbar {
@@ -745,6 +782,16 @@ input[type="range"] {
   }
   .font-card-actions button span {
     display: none;
+  }
+  .back-to-top {
+    right: 16px;
+    bottom: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top {
+    transition: none;
   }
 }
 
